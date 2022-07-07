@@ -11,7 +11,7 @@ import (
 
 const SetGetMultipleSize = 100
 
-func BenchmarkNolockSet_GetMultiple(b *testing.B) {
+func BenchmarkNoLockSet_GetMultiple(b *testing.B) {
 	set := NewNoLockSortedSet[int](SetGetMultipleSize)
 	for i := 0; i < set.Capacity(); i++ {
 		set.Insert(i * 3)
@@ -19,7 +19,7 @@ func BenchmarkNolockSet_GetMultiple(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		sinkGetMultiple = set.GetByInclusiveRange(24, 90)
+		sinkSGetMultiple = set.GetByInclusiveRange(24, 90)
 	}
 }
 
@@ -31,7 +31,7 @@ func BenchmarkSet_GetMultiple(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		sinkGetMultiple = set.GetByInclusiveRange(24, 90)
+		sinkSGetMultiple = set.GetByInclusiveRange(24, 90)
 	}
 }
 
@@ -43,7 +43,7 @@ func BenchmarkUmpcSortedMapSet_GetMultiple(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		sinkGetMultiple2, _ = set.BoundedKeys(24, 90)
+		sinkSGetMultiple2, _ = set.BoundedKeys(24, 90)
 	}
 }
 
@@ -59,7 +59,7 @@ func BenchmarkIgrmkTreeMapSet_GetMultiple(b *testing.B) {
 		for iter, end := set.Range(24, 90); iter != end; iter.Next() {
 			res = append(res, iter.Key())
 		}
-		sinkGetMultiple = res
+		sinkSGetMultiple = res
 	}
 }
 
@@ -78,9 +78,9 @@ func BenchmarkOkAvlTreeSet_GetMultiple(b *testing.B) {
 			res = append(res, key)
 			return true
 		})
-		sinkGetMultiple = res
+		sinkSGetMultiple = res
 	}
 }
 
-var sinkGetMultiple []int
-var sinkGetMultiple2 []interface{}
+var sinkSGetMultiple []int
+var sinkSGetMultiple2 []interface{}

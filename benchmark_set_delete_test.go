@@ -9,7 +9,7 @@ import (
 	okAvlTree "gopkg.in/OlexiyKhokhlov/avltree.v2"
 )
 
-func BenchmarkNolockSet_Delete(b *testing.B) {
+func BenchmarkNoLockSet_Delete(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		set := NewNoLockSortedSet[int](3)
 		set.Insert(300)
