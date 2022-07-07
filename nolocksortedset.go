@@ -39,9 +39,7 @@ func (s *NoLockSortedSet[K]) Insert(value K) int {
 		return -1
 	}
 
-	s.values = append(s.values, value)
-	copy(s.values[pos+1:], s.values[pos:])
-	s.values[pos] = value
+	s.values =  insertAt(s.values, pos, value)
 	return pos
 }
 
@@ -61,7 +59,7 @@ func (s *NoLockSortedSet[K]) Delete(value K) int {
 		return -1
 	}
 
-	s.values = append(s.values[:pos], s.values[pos+1:]...)
+	s.values = deleteAt(s.values, pos)
 	return pos
 }
 
