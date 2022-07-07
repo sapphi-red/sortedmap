@@ -1,4 +1,4 @@
-module github.com/sapphi-red/orderedmap
+module github.com/sapphi-red/sortedmap
 
 go 1.18
 
