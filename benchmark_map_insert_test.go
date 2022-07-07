@@ -27,6 +27,26 @@ func BenchmarkMap_Insert(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMapCalc_Insert(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		m := NewNoLockSortedMapCalc(3, safeAtoi)
+
+		m.Insert("300")
+		m.Insert("500")
+		m.Insert("700")
+	}
+}
+
+func BenchmarkMapCalc_Insert(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		m := NewSortedMapCalc(3, safeAtoi)
+
+		m.Insert("300")
+		m.Insert("500")
+		m.Insert("700")
+	}
+}
+
 func BenchmarkIgrmkTreeMapMap_Insert(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		m := igrmkTreeMap.New[int, string]()
@@ -56,6 +76,18 @@ func BenchmarkNolockMap_Init(b *testing.B) {
 func BenchmarkMap_Init(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		NewSortedMap[int, string](3)
+	}
+}
+
+func BenchmarkNolockMapCalc_Init(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		NewNoLockSortedMapCalc(3, safeAtoi)
+	}
+}
+
+func BenchmarkMapCalc_Init(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		NewSortedMapCalc(3, safeAtoi)
 	}
 }
 

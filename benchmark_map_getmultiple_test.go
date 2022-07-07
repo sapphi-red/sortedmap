@@ -34,6 +34,30 @@ func BenchmarkMap_GetMultiple(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMapCalc_GetMultiple(b *testing.B) {
+	m := NewNoLockSortedMapCalc(MapGetMultipleSize, safeAtoi)
+	for i := 0; i < m.Capacity(); i++ {
+		m.Insert(strconv.Itoa(i * 3))
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sinkMGetMultiple = m.GetByInclusiveRange(24, 90)
+	}
+}
+
+func BenchmarkMapCalc_GetMultiple(b *testing.B) {
+	m := NewSortedMapCalc(MapGetMultipleSize, safeAtoi)
+	for i := 0; i < m.Capacity(); i++ {
+		m.Insert(strconv.Itoa(i * 3))
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sinkMGetMultiple = m.GetByInclusiveRange(24, 90)
+	}
+}
+
 func BenchmarkIgrmkTreeMapMap_GetMultiple(b *testing.B) {
 	m := igrmkTreeMap.New[int, string]()
 	for i := 0; i < MapGetMultipleSize; i++ {

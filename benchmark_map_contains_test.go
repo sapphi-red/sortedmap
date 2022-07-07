@@ -38,6 +38,34 @@ func BenchmarkMap_Contains(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMapCalc_Contains(b *testing.B) {
+	m := NewNoLockSortedMapCalc(MapContainsSize, safeAtoi)
+	for i := 0; i < m.Capacity(); i++ {
+		m.Insert(strconv.Itoa(i * 3))
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sinkMContains = m.Contains(300)
+		sinkMContains = m.Contains(500)
+		sinkMContains = m.Contains(700)
+	}
+}
+
+func BenchmarkMapCalc_Contains(b *testing.B) {
+	m := NewSortedMapCalc(MapContainsSize, safeAtoi)
+	for i := 0; i < m.Capacity(); i++ {
+		m.Insert(strconv.Itoa(i * 3))
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sinkMContains = m.Contains(300)
+		sinkMContains = m.Contains(500)
+		sinkMContains = m.Contains(700)
+	}
+}
+
 func BenchmarkIgrmkTreeMapMap_Contains(b *testing.B) {
 	m := igrmkTreeMap.New[int, string]()
 	for i := 0; i < MapContainsSize; i++ {
@@ -67,3 +95,8 @@ func BenchmarkOkAvlTreeMap_Contains(b *testing.B) {
 }
 
 var sinkMContains = false
+
+func safeAtoi(s string) int {
+	res, _ := strconv.Atoi(s)
+	return res
+}

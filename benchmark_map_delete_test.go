@@ -34,6 +34,32 @@ func BenchmarkMap_Delete(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMapCalc_Delete(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		m := NewNoLockSortedMapCalc(3, safeAtoi)
+		m.Insert("300")
+		m.Insert("500")
+		m.Insert("700")
+
+		m.Delete(300)
+		m.Delete(500)
+		m.Delete(700)
+	}
+}
+
+func BenchmarkMapCalc_Delete(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		m := NewSortedMapCalc(3, safeAtoi)
+		m.Insert("300")
+		m.Insert("500")
+		m.Insert("700")
+
+		m.Delete(300)
+		m.Delete(500)
+		m.Delete(700)
+	}
+}
+
 func BenchmarkIgrmkTreeMapMap_Delete(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		m := igrmkTreeMap.New[int, string]()
