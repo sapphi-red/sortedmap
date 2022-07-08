@@ -1,3 +1,3 @@
 # sapphi-red/sortedmap
 
-A simple ordered map implementation with generics support.
+A simple sorted array (set, map) implementation with generics support.
