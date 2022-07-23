@@ -39,7 +39,7 @@ func (s *NoLockSortedSet[K]) Insert(value K) int {
 		return -1
 	}
 
-	s.values =  insertAt(s.values, pos, value)
+	s.values = insertAt(s.values, pos, value)
 	return pos
 }
 
@@ -48,10 +48,17 @@ func (s *NoLockSortedSet[K]) Insert(value K) int {
 // 	return 0 // inserted index
 // }
 
-// TODO
-// func (s *NewNoLockSortedSet[K]) InsertWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // inserted index
-// }
+func (s *NoLockSortedSet[K]) InsertWithAfterHint(value K, afterIndex int) int {
+	partialValues := s.values[afterIndex:]
+	pos, exists := slices.BinarySearch(partialValues, value)
+	if exists {
+		return -1
+	}
+
+	actualPos := afterIndex + pos
+	s.values = insertAt(s.values, actualPos, value)
+	return actualPos
+}
 
 func (s *NoLockSortedSet[K]) Delete(value K) int {
 	pos, exists := slices.BinarySearch(s.values, value)
@@ -81,9 +88,14 @@ func (s *NoLockSortedSet[K]) InsertAll(values []K) {
 	}
 }
 
-// TODO
-// func (s *NewNoLockSortedSet[K]) InsertAllOrdered(values []K) {
-// }
+func (s *NoLockSortedSet[K]) InsertAllOrdered(values []K) {
+	s.ExtendCapacityTo(s.Size() + len(values))
+
+	hint := 0
+	for i := range values {
+		hint = s.InsertWithAfterHint(values[i], hint)
+	}
+}
 
 func (s *NoLockSortedSet[K]) Contains(value K) bool {
 	_, exists := slices.BinarySearch(s.values, value)

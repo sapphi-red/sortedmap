@@ -40,6 +40,22 @@ func BenchmarkNoLockMap_InsertMultipleByMap(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMap_InsertMultipleOrdered(b *testing.B) {
+	var keys = make([]int, MapInsertMultipleSize)
+	var values = make([]string, MapInsertMultipleSize)
+	for i := range values {
+		keys[i] = i * 5
+		values[i] = strconv.Itoa(i * 5)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m := NewNoLockSortedMap[int, string](3)
+
+		m.InsertAllOrdered(keys, values)
+	}
+}
+
 func BenchmarkMap_InsertMultiple(b *testing.B) {
 	var keys = make([]int, MapInsertMultipleSize)
 	var values = make([]string, MapInsertMultipleSize)

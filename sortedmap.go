@@ -58,10 +58,12 @@ func (s *SortedMap[K, V]) Insert(key K, value V) int {
 // 	return 0 // inserted index
 // }
 
-// TODO
-// func (s *SortedMap[K, V]) InsertWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // inserted index
-// }
+func (s *SortedMap[K, V]) InsertWithAfterHint(key K, value V, afterIndex int) int {
+	s.m.Lock()
+	res := s.s.InsertWithAfterHint(key, value, afterIndex)
+	s.m.Unlock()
+	return res
+}
 
 func (s *SortedMap[K, V]) Delete(key K) int {
 	s.m.Lock()
@@ -92,9 +94,11 @@ func (s *SortedMap[K, V]) InsertAllByMap(m map[K]V) {
 	s.m.Unlock()
 }
 
-// TODO
-// func (s *SortedMap[K, V]) InsertAllOrdered(values []K) {
-// }
+func (s *SortedMap[K, V]) InsertAllOrdered(keys []K, values []V) {
+	s.m.Lock()
+	s.s.InsertAllOrdered(keys, values)
+	s.m.Unlock()
+}
 
 func (s *SortedMap[K, V]) Contains(key K) bool {
 	s.m.RLock()

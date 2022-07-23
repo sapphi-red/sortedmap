@@ -57,6 +57,10 @@ func TestNoLockSortedMapCalc_Insert(t *testing.T) {
 	assert.Equal(t, true, set.Contains(1))
 }
 
+// TODO
+// func TestNoLockSortedMapCalc_InsertWithAfterHint(t *testing.T) {
+// }
+
 func TestNoLockSortedMapCalc_Delete(t *testing.T) {
 	t.Parallel()
 
@@ -88,6 +92,28 @@ func TestNoLockSortedMapCalc_InsertAll(t *testing.T) {
 	assert.Equal(t, false, set.Contains(6))
 
 	set.InsertAll([]string{"2", "5"})
+	assert.Equal(t, true, set.Contains(1))
+	assert.Equal(t, true, set.Contains(2))
+	assert.Equal(t, true, set.Contains(3))
+	assert.Equal(t, true, set.Contains(4))
+	assert.Equal(t, true, set.Contains(5))
+	assert.Equal(t, false, set.Contains(6))
+}
+
+func TestNoLockSortedMapCalc_InsertAllOrdered(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewNoLockSortedMapCalc(5, safeAtoi)
+	set.InsertAllOrdered([]string{"1", "3", "4"})
+	assert.Equal(t, 3, set.Size())
+	assert.Equal(t, true, set.Contains(1))
+	assert.Equal(t, false, set.Contains(2))
+	assert.Equal(t, true, set.Contains(3))
+	assert.Equal(t, true, set.Contains(4))
+	assert.Equal(t, false, set.Contains(5))
+	assert.Equal(t, false, set.Contains(6))
+
+	set.InsertAllOrdered([]string{"2", "5"})
 	assert.Equal(t, true, set.Contains(1))
 	assert.Equal(t, true, set.Contains(2))
 	assert.Equal(t, true, set.Contains(3))

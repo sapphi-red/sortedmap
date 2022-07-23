@@ -56,10 +56,19 @@ func (s *NoLockSortedMapCalc[K, V]) Insert(value V) int {
 // 	return 0 // inserted index
 // }
 
-// TODO
-// func (s *NewNoLockSortedMapCalc[K, V]) InsertWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // inserted index
-// }
+func (s *NoLockSortedMapCalc[K, V]) InsertWithAfterHint(value V, afterIndex int) int {
+	key := s.calcKey(value)
+	partialKeys := s.keys[afterIndex:]
+	pos, exists := slices.BinarySearch(partialKeys, key)
+	if exists {
+		return -1
+	}
+
+	actualPos := afterIndex + pos
+	s.keys =  insertAt(s.keys, actualPos, key)
+	s.values =  insertAt(s.values, actualPos, value)
+	return actualPos
+}
 
 func (s *NoLockSortedMapCalc[K, V]) Delete(key K) int {
 	pos, exists := slices.BinarySearch(s.keys, key)
@@ -90,9 +99,14 @@ func (s *NoLockSortedMapCalc[K, V]) InsertAll(values []V) {
 	}
 }
 
-// TODO
-// func (s *NewNoLockSortedMapCalc[K, V]) InsertAllOrdered(values []K) {
-// }
+func (s *NoLockSortedMapCalc[K, V]) InsertAllOrdered(values []V) {
+	s.ExtendCapacityTo(s.Size() + len(values))
+
+	hint := 0
+	for i := range values {
+		hint = s.InsertWithAfterHint(values[i], hint)
+	}
+}
 
 func (s *NoLockSortedMapCalc[K, V]) Contains(key K) bool {
 	_, exists := slices.BinarySearch(s.keys, key)

@@ -53,10 +53,18 @@ func (s *NoLockSortedMap[K, V]) Insert(key K, value V) int {
 // 	return 0 // inserted index
 // }
 
-// TODO
-// func (s *NewNoLockSortedMap[K, V]) InsertWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // inserted index
-// }
+func (s *NoLockSortedMap[K, V]) InsertWithAfterHint(key K, value V, afterIndex int) int {
+	partialKeys := s.keys[afterIndex:]
+	pos, exists := slices.BinarySearch(partialKeys, key)
+	if exists {
+		return -1
+	}
+
+	actualPos := afterIndex + pos
+	s.keys =  insertAt(s.keys, actualPos, key)
+	s.values =  insertAt(s.values, actualPos, value)
+	return actualPos
+}
 
 func (s *NoLockSortedMap[K, V]) Delete(key K) int {
 	pos, exists := slices.BinarySearch(s.keys, key)
@@ -95,9 +103,14 @@ func (s *NoLockSortedMap[K, V]) InsertAllByMap(m map[K]V) {
 	}
 }
 
-// TODO
-// func (s *NewNoLockSortedMap[K, V]) InsertAllOrdered(values []K) {
-// }
+func (s *NoLockSortedMap[K, V]) InsertAllOrdered(keys []K, values []V) {
+	s.ExtendCapacityTo(s.Size() + len(values))
+
+	hint := 0
+	for i := range keys {
+		hint = s.InsertWithAfterHint(keys[i], values[i], hint)
+	}
+}
 
 func (s *NoLockSortedMap[K, V]) Contains(key K) bool {
 	_, exists := slices.BinarySearch(s.keys, key)
