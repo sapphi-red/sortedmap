@@ -86,6 +86,22 @@ func BenchmarkMap_InsertMultipleByMap(b *testing.B) {
 	}
 }
 
+func BenchmarkMap_InsertMultipleOrdered(b *testing.B) {
+	var keys = make([]int, MapInsertMultipleSize)
+	var values = make([]string, MapInsertMultipleSize)
+	for i := range values {
+		keys[i] = i * 5
+		values[i] = strconv.Itoa(i * 5)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m := NewSortedMap[int, string](3)
+
+		m.InsertAllOrdered(keys, values)
+	}
+}
+
 func BenchmarkNoLockMapCalc_InsertMultiple(b *testing.B) {
 	var values = make([]string, MapInsertMultipleSize)
 	for i := range values {
@@ -100,6 +116,20 @@ func BenchmarkNoLockMapCalc_InsertMultiple(b *testing.B) {
 	}
 }
 
+func BenchmarkNoLockMapCalc_InsertMultipleOrdered(b *testing.B) {
+	var values = make([]string, MapInsertMultipleSize)
+	for i := range values {
+		values[i] = strconv.Itoa(i * 5)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m := NewNoLockSortedMapCalc(3, safeAtoi)
+
+		m.InsertAllOrdered(values)
+	}
+}
+
 func BenchmarkMapCalc_InsertMultiple(b *testing.B) {
 	var values = make([]string, MapInsertMultipleSize)
 	for i := range values {
@@ -111,6 +141,20 @@ func BenchmarkMapCalc_InsertMultiple(b *testing.B) {
 		m := NewSortedMapCalc(3, safeAtoi)
 
 		m.InsertAll(values)
+	}
+}
+
+func BenchmarkMapCalc_InsertMultipleOrdered(b *testing.B) {
+	var values = make([]string, MapInsertMultipleSize)
+	for i := range values {
+		values[i] = strconv.Itoa(i * 5)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m := NewSortedMapCalc(3, safeAtoi)
+
+		m.InsertAllOrdered(values)
 	}
 }
 

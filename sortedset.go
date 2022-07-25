@@ -57,10 +57,12 @@ func (s *SortedSet[K]) Insert(value K) int {
 // 	return 0 // inserted index
 // }
 
-// TODO
-// func (s *SortedSet[K]) InsertWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // inserted index
-// }
+func (s *SortedSet[K]) InsertWithAfterHint(value K, afterIndex int) int {
+	s.m.Lock()
+	res := s.s.InsertWithAfterHint(value, afterIndex)
+	s.m.Unlock()
+	return res
+}
 
 func (s *SortedSet[K]) Delete(value K) int {
 	s.m.Lock()
@@ -85,9 +87,11 @@ func (s *SortedSet[K]) InsertAll(values []K) {
 	s.m.Unlock()
 }
 
-// TODO
-// func (s *SortedSet[K]) InsertAllOrdered(values []K) {
-// }
+func (s *SortedSet[K]) InsertAllOrdered(values []K) {
+	s.m.Lock()
+	s.s.InsertAllOrdered(values)
+	s.m.Unlock()
+}
 
 func (s *SortedSet[K]) Contains(value K) bool {
 	s.m.RLock()

@@ -25,6 +25,20 @@ func BenchmarkNolockSet_InsertMultiple(b *testing.B) {
 	}
 }
 
+func BenchmarkNolockSet_InsertMultipleOrdered(b *testing.B) {
+	var values = make([]int, SetInsertMultipleSize)
+	for i := range values {
+		values[i] = i * 5
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		set := NewNoLockSortedSet[int](3)
+
+		set.InsertAllOrdered(values)
+	}
+}
+
 func BenchmarkSet_InsertMultiple(b *testing.B) {
 	var values = make([]int, SetInsertMultipleSize)
 	for i := range values {
@@ -36,6 +50,20 @@ func BenchmarkSet_InsertMultiple(b *testing.B) {
 		set := NewSortedSet[int](3)
 
 		set.InsertAll(values)
+	}
+}
+
+func BenchmarkSet_InsertMultipleOrdered(b *testing.B) {
+	var values = make([]int, SetInsertMultipleSize)
+	for i := range values {
+		values[i] = i * 5
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		set := NewSortedSet[int](3)
+
+		set.InsertAllOrdered(values)
 	}
 }
 

@@ -43,9 +43,15 @@ func TestSortedMap_Insert(t *testing.T) {
 	assert.Equal(t, true, set.Contains(1))
 }
 
-// TODO
-// func TestSortedMap_InsertWithAfterHint(t *testing.T) {
-// }
+func TestSortedMap_InsertWithAfterHint(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedMap[int, string](5)
+	res := set.InsertWithAfterHint(1, "1", 0)
+	assert.Equal(t, 0, res)
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, true, set.Contains(1))
+}
 
 func TestSortedMap_Delete(t *testing.T) {
 	t.Parallel()

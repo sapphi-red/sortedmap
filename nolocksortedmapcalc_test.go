@@ -57,9 +57,27 @@ func TestNoLockSortedMapCalc_Insert(t *testing.T) {
 	assert.Equal(t, true, set.Contains(1))
 }
 
-// TODO
-// func TestNoLockSortedMapCalc_InsertWithAfterHint(t *testing.T) {
-// }
+func TestNoLockSortedMapCalc_InsertWithAfterHint(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewNoLockSortedMapCalc(5, safeAtoi)
+	assert.Equal(t, 0, set.Size())
+
+	res := set.InsertWithAfterHint("1", 0)
+	assert.Equal(t, 0, res)
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, true, set.Contains(1))
+
+	res2 := set.InsertWithAfterHint("1", 0)
+	assert.Equal(t, -1, res2)
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, true, set.Contains(1))
+
+	res3 := set.InsertWithAfterHint("2", 1)
+	assert.Equal(t, 1, res3)
+	assert.Equal(t, 2, set.Size())
+	assert.Equal(t, true, set.Contains(2))
+}
 
 func TestNoLockSortedMapCalc_Delete(t *testing.T) {
 	t.Parallel()
