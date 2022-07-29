@@ -64,6 +64,17 @@ func TestSortedSet_InsertAll(t *testing.T) {
 	assert.Equal(t, true, set.Contains(4))
 }
 
+
+func TestSortedSet_InsertAllOrdered(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedSet[int](5)
+	set.InsertAllOrdered([]int{1, 3, 4})
+	assert.Equal(t, true, set.Contains(1))
+	assert.Equal(t, true, set.Contains(3))
+	assert.Equal(t, true, set.Contains(4))
+}
+
 func TestSortedSet_Contains(t *testing.T) {
 	t.Parallel()
 
