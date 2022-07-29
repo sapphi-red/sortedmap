@@ -86,12 +86,35 @@ func TestNoLockSortedMapCalc_Delete(t *testing.T) {
 	set.Insert("1")
 	assert.Equal(t, 1, set.Size())
 
-	res := set.Delete(1)
+	res := set.Delete("1")
 	assert.Equal(t, 0, res)
 	assert.Equal(t, 0, set.Size())
 
-	res2 := set.Delete(1)
+	res2 := set.Delete("1")
 	assert.Equal(t, -1, res2)
+	assert.Equal(t, 0, set.Size())
+	assert.Equal(t, false, set.Contains(1))
+}
+
+func TestNoLockSortedMapCalc_DeleteWithAfterHint(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewNoLockSortedMapCalc(5, safeAtoi)
+	set.Insert("1")
+	set.Insert("2")
+	assert.Equal(t, 2, set.Size())
+
+	res := set.DeleteWithAfterHint("2", 1)
+	assert.Equal(t, 1, res)
+	assert.Equal(t, 1, set.Size())
+
+	res2 := set.DeleteWithAfterHint("2", 1)
+	assert.Equal(t, -1, res2)
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, false, set.Contains(2))
+
+	res3 := set.DeleteWithAfterHint("1", 0)
+	assert.Equal(t, 0, res3)
 	assert.Equal(t, 0, set.Size())
 	assert.Equal(t, false, set.Contains(1))
 }
@@ -138,6 +161,38 @@ func TestNoLockSortedMapCalc_InsertAllOrdered(t *testing.T) {
 	assert.Equal(t, true, set.Contains(4))
 	assert.Equal(t, true, set.Contains(5))
 	assert.Equal(t, false, set.Contains(6))
+}
+
+func TestNoLockSortedMapCalc_DeleteAll(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewNoLockSortedMapCalc(5, safeAtoi)
+	set.InsertAll([]string{"1", "3", "4"})
+	assert.Equal(t, 3, set.Size())
+
+	set.DeleteAll([]string{"1", "4"})
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, false, set.Contains(1))
+	assert.Equal(t, false, set.Contains(2))
+	assert.Equal(t, true, set.Contains(3))
+	assert.Equal(t, false, set.Contains(4))
+	assert.Equal(t, false, set.Contains(5))
+}
+
+func TestNoLockSortedMapCalc_DeleteAllOrdered(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewNoLockSortedMapCalc(5, safeAtoi)
+	set.InsertAll([]string{"1", "3", "4"})
+	assert.Equal(t, 3, set.Size())
+
+	set.DeleteAllOrdered([]string{"1", "4"})
+	assert.Equal(t, 1, set.Size())
+	assert.Equal(t, false, set.Contains(1))
+	assert.Equal(t, false, set.Contains(2))
+	assert.Equal(t, true, set.Contains(3))
+	assert.Equal(t, false, set.Contains(4))
+	assert.Equal(t, false, set.Contains(5))
 }
 
 func TestNoLockSortedMapCalc_Contains(t *testing.T) {

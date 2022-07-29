@@ -41,9 +41,9 @@ func BenchmarkNoLockMapCalc_Delete(b *testing.B) {
 		m.Insert("500")
 		m.Insert("700")
 
-		m.Delete(300)
-		m.Delete(500)
-		m.Delete(700)
+		m.Delete("300")
+		m.Delete("500")
+		m.Delete("700")
 	}
 }
 
@@ -54,9 +54,9 @@ func BenchmarkMapCalc_Delete(b *testing.B) {
 		m.Insert("500")
 		m.Insert("700")
 
-		m.Delete(300)
-		m.Delete(500)
-		m.Delete(700)
+		m.Delete("300")
+		m.Delete("500")
+		m.Delete("700")
 	}
 }
 

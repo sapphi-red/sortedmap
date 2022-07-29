@@ -14,7 +14,7 @@ type SortedMap[K constraints.Ordered, V any] struct {
 func NewSortedMap[K constraints.Ordered, V any](capacity int) *SortedMap[K, V] {
 	return &SortedMap[K, V]{
 		s: NoLockSortedMap[K, V]{
-			keys: make([]K, 0, capacity),
+			keys:   make([]K, 0, capacity),
 			values: make([]V, 0, capacity),
 		},
 	}
@@ -77,10 +77,12 @@ func (s *SortedMap[K, V]) Delete(key K) int {
 // 	return 0 // deleted index
 // }
 
-// TODO
-// func (s *SortedMap[K, V]) DeleteWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // deleted index
-// }
+func (s *SortedMap[K, V]) DeleteWithAfterHint(value K, afterIndex int) int {
+	s.m.Lock()
+	res := s.s.DeleteWithAfterHint(value, afterIndex)
+	s.m.Unlock()
+	return res
+}
 
 func (s *SortedMap[K, V]) InsertAll(keys []K, values []V) {
 	s.m.Lock()
@@ -97,6 +99,18 @@ func (s *SortedMap[K, V]) InsertAllByMap(m map[K]V) {
 func (s *SortedMap[K, V]) InsertAllOrdered(keys []K, values []V) {
 	s.m.Lock()
 	s.s.InsertAllOrdered(keys, values)
+	s.m.Unlock()
+}
+
+func (s *SortedMap[K, V]) DeleteAll(keys []K) {
+	s.m.Lock()
+	s.s.DeleteAll(keys)
+	s.m.Unlock()
+}
+
+func (s *SortedMap[K, V]) DeleteAllOrdered(keys []K) {
+	s.m.Lock()
+	s.s.DeleteAllOrdered(keys)
 	s.m.Unlock()
 }
 

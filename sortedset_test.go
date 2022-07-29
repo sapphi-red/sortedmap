@@ -54,6 +54,17 @@ func TestSortedSet_Delete(t *testing.T) {
 	assert.Equal(t, 0, set.Size())
 }
 
+func TestSortedSet_DeleteWithAfterHint(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedSet[int](5)
+	set.Insert(1)
+
+	res := set.DeleteWithAfterHint(1, 0)
+	assert.Equal(t, 0, res)
+	assert.Equal(t, 0, set.Size())
+}
+
 func TestSortedSet_InsertAll(t *testing.T) {
 	t.Parallel()
 
@@ -73,6 +84,25 @@ func TestSortedSet_InsertAllOrdered(t *testing.T) {
 	assert.Equal(t, true, set.Contains(1))
 	assert.Equal(t, true, set.Contains(3))
 	assert.Equal(t, true, set.Contains(4))
+}
+
+func TestSortedSet_DeleteAll(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedSet[int](5)
+	set.InsertAll([]int{1, 3, 4})
+	set.DeleteAll([]int{1, 3, 4})
+	assert.Equal(t, 0, set.Size())
+}
+
+
+func TestSortedSet_DeleteAllOrdered(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedSet[int](5)
+	set.InsertAll([]int{1, 3, 4})
+	set.DeleteAllOrdered([]int{1, 3, 4})
+	assert.Equal(t, 0, set.Size())
 }
 
 func TestSortedSet_Contains(t *testing.T) {

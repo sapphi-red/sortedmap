@@ -70,7 +70,8 @@ func (s *NoLockSortedMapCalc[K, V]) InsertWithAfterHint(value V, afterIndex int)
 	return actualPos
 }
 
-func (s *NoLockSortedMapCalc[K, V]) Delete(key K) int {
+func (s *NoLockSortedMapCalc[K, V]) Delete(value V) int {
+	key := s.calcKey(value)
 	pos, exists := slices.BinarySearch(s.keys, key)
 	if !exists {
 		return -1
@@ -86,10 +87,19 @@ func (s *NoLockSortedMapCalc[K, V]) Delete(key K) int {
 // 	return 0 // deleted index
 // }
 
-// TODO
-// func (s *NewNoLockSortedMapCalc[K, V]) DeleteWithAfterHint(value K, afterIndex int) int {
-// 	return 0 // deleted index
-// }
+func (s *NoLockSortedMapCalc[K, V]) DeleteWithAfterHint(value V, afterIndex int) int {
+	key := s.calcKey(value)
+	partialKeys := s.keys[afterIndex:]
+	pos, exists := slices.BinarySearch(partialKeys, key)
+	if !exists {
+		return -1
+	}
+
+	actualPos := afterIndex + pos
+	s.keys =  deleteAt(s.keys, actualPos)
+	s.values =  deleteAt(s.values, actualPos)
+	return actualPos
+}
 
 func (s *NoLockSortedMapCalc[K, V]) InsertAll(values []V) {
 	s.ExtendCapacityTo(s.Size() + len(values))
@@ -105,6 +115,24 @@ func (s *NoLockSortedMapCalc[K, V]) InsertAllOrdered(values []V) {
 	hint := 0
 	for i := range values {
 		hint = s.InsertWithAfterHint(values[i], hint)
+	}
+}
+
+
+func (s *NoLockSortedMapCalc[K, V]) DeleteAll(values []V) {
+	s.ExtendCapacityTo(s.Size() + len(values))
+
+	for i := range values {
+		s.Delete(values[i])
+	}
+}
+
+func (s *NoLockSortedMapCalc[K, V]) DeleteAllOrdered(values []V) {
+	s.ExtendCapacityTo(s.Size() + len(values))
+
+	hint := 0
+	for i := range values {
+		hint = s.DeleteWithAfterHint(values[i], hint)
 	}
 }
 

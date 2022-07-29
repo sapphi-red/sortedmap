@@ -59,7 +59,18 @@ func TestSortedMapCalc_Delete(t *testing.T) {
 	set := sortedmap.NewSortedMapCalc(5, safeAtoi)
 	set.Insert("1")
 
-	res := set.Delete(1)
+	res := set.Delete("1")
+	assert.Equal(t, 0, res)
+	assert.Equal(t, 0, set.Size())
+}
+
+func TestSortedMapCalc_DeleteWithAfterHint(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedMapCalc(5, safeAtoi)
+	set.Insert("1")
+
+	res := set.DeleteWithAfterHint("1", 0)
 	assert.Equal(t, 0, res)
 	assert.Equal(t, 0, set.Size())
 }
@@ -82,6 +93,24 @@ func TestSortedMapCalc_InsertAllOrdered(t *testing.T) {
 	assert.Equal(t, true, set.Contains(1))
 	assert.Equal(t, true, set.Contains(3))
 	assert.Equal(t, true, set.Contains(4))
+}
+
+func TestSortedMapCalc_DeleteAll(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedMapCalc(5, safeAtoi)
+	set.InsertAll([]string{"1", "3", "4"})
+	set.DeleteAll([]string{"1", "3", "4"})
+	assert.Equal(t, 0, set.Size())
+}
+
+func TestSortedMapCalc_DeleteAllOrdered(t *testing.T) {
+	t.Parallel()
+
+	set := sortedmap.NewSortedMapCalc(5, safeAtoi)
+	set.InsertAll([]string{"1", "3", "4"})
+	set.DeleteAllOrdered([]string{"1", "3", "4"})
+	assert.Equal(t, 0, set.Size())
 }
 
 func TestSortedMapCalc_Contains(t *testing.T) {
